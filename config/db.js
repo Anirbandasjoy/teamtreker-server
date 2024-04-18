@@ -5,7 +5,7 @@ const pool = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "teamtrekker",
+  database: "teamtreker",
 });
 pool.connect((err) => {
   if (err) throw err;

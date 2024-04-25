@@ -89,6 +89,7 @@ const getEmployeeByEmail = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+// working now
 
 module.exports = {
   createNewEmploye,

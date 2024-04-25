@@ -1,8 +1,13 @@
-const { createNewEmploye } = require("../controller/employe.controller")
+const {
+  createNewEmploye,
+  getAllEmployee,
+  getEmployeeByEmail,
+} = require("../controller/employe.controller");
 
-const employeRouter =  require("express").Router()
+const employeRouter = require("express").Router();
 
+employeRouter.post("/create", createNewEmploye);
+employeRouter.get("/getAll-employee", getAllEmployee);
+employeRouter.get("/single-employee/:email", getEmployeeByEmail);
 
-employeRouter.post("/create", createNewEmploye)
-
-module.exports = employeRouter
+module.exports = employeRouter;

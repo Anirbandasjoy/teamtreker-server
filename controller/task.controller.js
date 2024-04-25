@@ -144,10 +144,36 @@ const updateTaskStatus = (req, res) => {
   }
 };
 
+const deleteTask = (req, res) => {
+  try {
+    const taskId = req.params.id;
+    const sql = `DELETE FROM tasks WHERE id = ?`;
+    pool.query(sql, [taskId], (err, results) => {
+      if (err) {
+        console.error("Error deleting task:", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      // Check if any task was deleted
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+
+      console.log("Task deleted successfully");
+      res.status(200).json({ message: "Task deleted successfully" });
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
 module.exports = {
   createNewTask,
   findAlltask,
   findSingleTask,
   findTasksByEmployeeId,
   updateTaskStatus,
+  deleteTask,
 };

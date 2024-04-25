@@ -3,7 +3,6 @@ const pool = require("../config/db");
 
 const createNewTask = async (req, res) => {
   try {
-    console.log(req.body);
     const id = uuidv4();
     const {
       title,
@@ -55,7 +54,6 @@ const findAlltask = (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
       }
 
-      console.log("Tasks fetched successfully:", results);
       res.status(200).json(results);
     });
   } catch (error) {
@@ -82,7 +80,6 @@ const findSingleTask = (req, res) => {
         return res.status(404).json({ message: "Task not found" });
       }
 
-      console.log("Task fetched successfully:", results[0]);
       res.status(200).json(results[0]);
     });
   } catch (error) {
@@ -95,7 +92,7 @@ const findSingleTask = (req, res) => {
 const findTasksByEmployeeId = (req, res) => {
   try {
     const id = req.params.id;
-    console.log({ id });
+
     const sql = `SELECT * FROM tasks WHERE assigned_employee_id = ?`;
 
     pool.query(sql, [id], (err, results) => {
@@ -111,8 +108,34 @@ const findTasksByEmployeeId = (req, res) => {
           .json({ message: "No tasks found for this employee" });
       }
 
-      console.log("Tasks fetched successfully for employee ID:", id);
       res.status(200).json(results);
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+const updateTaskStatus = (req, res) => {
+  try {
+    const id = req.params.id;
+    const { status } = req.body;
+
+    const sql = `UPDATE tasks SET status = ? WHERE id = ?`;
+    pool.query(sql, [status, id], (err, results) => {
+      if (err) {
+        console.error("Error updating task status:", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      // Check if any task was updated
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+
+      console.log("Task status updated successfully");
+      res.status(200).json({ message: "Task status updated successfully" });
     });
   } catch (error) {
     res
@@ -126,4 +149,5 @@ module.exports = {
   findAlltask,
   findSingleTask,
   findTasksByEmployeeId,
+  updateTaskStatus,
 };
